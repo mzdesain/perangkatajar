@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Perangkat Ajar - Muzanni Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Times+New+Roman&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: white; min-height: 100vh; display: flex; flex-direction: column; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        input, select { background: #334155 !important; border: 1px solid #475569 !important; color: white !important; }
+
+        /* PDF Styling (Microsoft Word Style) */
+        #result-container { font-family: 'Times New Roman', Times, serif; color: black; line-height: 1.6; }
+        .page-word { 
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 2.54cm; 
+            margin: 20px auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .page-word { margin: 0; box-shadow: none; page-break-after: always; width: 100%; }
+            footer { display: none !important; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto no-print flex-grow">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-extrabold text-emerald-400 mb-2 tracking-tight">AI Perangkat Ajar Pro</h1>
+            <p class="text-slate-400 font-medium">Sistem Administrasi Guru Otomatis - Semua Jenjang</p>
+        </header>
+
+        <div class="glass-panel p-8 rounded-3xl space-y-8 mb-10 shadow-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-3">
+                    <label class="font-bold text-emerald-400 flex items-center gap-2 text-sm"><i class="fa-solid fa-school"></i> Sekolah & Wilayah</label>
+                    <input type="file" id="logo-input" class="w-full text-xs cursor-pointer">
+                    <input type="text" id="sekolah" placeholder="Nama Sekolah" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="kabupaten" placeholder="Kabupaten / Kota" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="space-y-3">
+                    <label class="font-bold text-emerald-400 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-tie"></i> Personalia</label>
+                    <input type="text" id="guru" placeholder="Nama Guru & Gelar" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="kepsek" placeholder="Nama Kepala Sekolah" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="space-y-3">
+                    <label class="font-bold text-emerald-400 flex items-center gap-2 text-sm"><i class="fa-solid fa-calendar-check"></i> Detail Pembelajaran</label>
+                    <input type="text" id="mapel" placeholder="Mata Pelajaran" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="alokasi" placeholder="Alokasi Waktu (e.g. 2 x 35 Menit)" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="font-bold text-emerald-400 block mb-2 text-sm">Jenjang & Kelas Lengkap</label>
+                    <select id="kelas" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                        <option value="">-- Pilih Kelas --</option>
+                        <optgroup label="Sekolah Dasar (SD)">
+                            <option value="1">Kelas 1 (Fase A)</option>
+                            <option value="2">Kelas 2 (Fase A)</option>
+                            <option value="3">Kelas 3 (Fase B)</option>
+                            <option value="4">Kelas 4 (Fase B)</option>
+                            <option value="5">Kelas 5 (Fase C)</option>
+                            <option value="6">Kelas 6 (Fase C)</option>
+                        </optgroup>
+                        <optgroup label="SMP">
+                            <option value="7">Kelas 7 (Fase D)</option>
+                            <option value="8">Kelas 8 (Fase D)</option>
+                            <option value="9">Kelas 9 (Fase D)</option>
+                        </optgroup>
+                        <optgroup label="SMA">
+                            <option value="10">Kelas 10 (Fase E)</option>
+                            <option value="11">Kelas 11 (Fase F)</option>
+                            <option value="12">Kelas 12 (Fase F)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-bold text-emerald-400 block mb-2 text-sm">Praktik Pedagogis</label>
+                    <select id="pedagogis" class="w-full p-3 rounded-xl outline-none transition focus:ring-2 focus:ring-emerald-500">
+                        <option value="Problem-Based Learning">Pembelajaran Berbasis Masalah (PBL)</option>
+                        <option value="Project-Based Learning">Pembelajaran Berbasis Proyek (PjBL)</option>
+                        <option value="Inquiry-Based Learning">Pembelajaran Inkuiri</option>
+                        <option value="Differentiated Learning">Pembelajaran Berdiferensiasi</option>
+                        <option value="Cooperative Learning">Pembelajaran Kooperatif</option>
+                        <option value="Discovery Learning">Pembelajaran Penemuan (Discovery)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="font-bold text-emerald-400 block mb-4 text-center text-sm uppercase tracking-widest">Dimensi Profil Lulusan</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Keimanan dan Ketakwaan"> Keimanan & Taqwa</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Kewargaan"> Kewargaan</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Kreativitas"> Kreativitas</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Penalaran Kritis"> Penalaran Kritis</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Kemandirian"> Kemandirian</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Kolaborasi"> Kolaborasi</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Komunikasi"> Komunikasi</label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300"><input type="checkbox" name="profil" value="Kesehatan"> Kesehatan</label>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <input type="text" id="bab" placeholder="Masukkan Judul BAB atau Materi Pokok..." class="w-full p-4 rounded-2xl outline-none text-xl border-2 border-emerald-500 font-bold mb-4 shadow-inner">
+                <button onclick="generateFinal()" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold text-xl shadow-lg transition-all active:scale-95">
+                    BUAT PERANGKAT AJAR (PDF)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="no-print py-12 border-t border-slate-800 text-center">
+        <div class="flex justify-center gap-8 mb-6 text-2xl text-slate-400">
+            <a href="#" target="_blank" class="hover:text-emerald-400 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank" class="hover:text-emerald-400 transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#" target="_blank" class="hover:text-emerald-400 transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://muzanni.my.id" target="_blank" class="hover:text-emerald-400 transition-colors"><i class="fa-solid fa-globe"></i></a>
+        </div>
+        <p class="text-slate-500 text-xs font-bold tracking-[0.3em] uppercase">Created by Muzanni</p>
+    </footer>
+
+    <div id="result-container" class="hidden">
+        <div class="page-word" id="p1"></div>
+        <div class="page-word" id="p2"></div>
+    </div>
+
+    <script>
+        let logoImg = null;
+        document.getElementById('logo-input').onchange = (e) => {
+            const r = new FileReader();
+            r.onload = () => logoImg = r.result;
+            r.readAsDataURL(e.target.files[0]);
+        };
+
+        function generateFinal() {
+            const d = {
+                guru: document.getElementById('guru').value || "Muzanni, S.H.",
+                kepsek: document.getElementById('kepsek').value || "....................",
+                sekolah: document.getElementById('sekolah').value || "Nama Satuan Pendidikan",
+                kab: document.getElementById('kabupaten').value || "KABUPATEN",
+                mapel: document.getElementById('mapel').value || "MATA PELAJARAN",
+                bab: document.getElementById('bab').value,
+                alokasi: document.getElementById('alokasi').value || "2 x 35 Menit",
+                kelas: document.getElementById('kelas').value,
+                pedagogis: document.getElementById('pedagogis').value,
+                profil: Array.from(document.querySelectorAll('input[name="profil"]:checked')).map(cb => cb.value).join(", ")
+            };
+
+            if(!d.bab || !d.kelas) return alert("Pilih Jenjang & Isi Materi Terlebih Dahulu!");
+
+            document.getElementById('result-container').classList.remove('hidden');
+
+            // PAGE 1: IDENTITAS & KOMPONEN INTI
+            document.getElementById('p1').innerHTML = `
+                <div style="border-bottom: 3px solid black; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; gap: 20px;">
+                    ${logoImg ? `<img src="${logoImg}" style="width: 80px; height: 80px; object-fit: contain;">` : `<div style="width: 80px; height: 80px; background: #eee; border: 1px solid #ddd;"></div>`}
+                    <div style="text-align: center; flex: 1;">
+                        <h2 style="font-size: 16pt; font-weight: bold; margin: 0;">MODUL AJAR KURIKULUM MERDEKA</h2>
+                        <h3 style="font-size: 14pt; font-weight: bold; margin: 0;">${d.sekolah.toUpperCase()}</h3>
+                        <p style="font-size: 10pt; margin: 0; font-style: italic;">WILAYAH ${d.kab.toUpperCase()}, TAHUN PELAJARAN 2025/2026</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 35px;">
+                    <h4 style="font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 15px;">I. INFORMASI UMUM</h4>
+                    <table style="width: 100%; font-size: 11pt; border-collapse: collapse;">
+                        <tr><td style="width: 35%; padding: 3px 0;">a. Nama Penyusun</td><td>: ${d.guru}</td></tr>
+                        <tr><td style="padding: 3px 0;">b. Nama Sekolah</td><td>: ${d.sekolah}</td></tr>
+                        <tr><td style="padding: 3px 0;">c. Mata Pelajaran</td><td>: ${d.mapel}</td></tr>
+                        <tr><td style="padding: 3px 0;">d. Jenjang / Kelas</td><td>: ${d.kelas}</td></tr>
+                        <tr><td style="padding: 3px 0;">e. Alokasi Waktu</td><td>: ${d.alokasi}</td></tr>
+                        <tr><td style="padding: 3px 0;">f. Profil Pelajar Pancasila</td><td>: ${d.profil}</td></tr>
+                    </table>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4 style="font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 15px;">II. KOMPONEN INTI</h4>
+                    <p style="margin-bottom: 8px;"><strong>1. Capaian Pembelajaran (CP)</strong></p>
+                    <p style="margin-left: 20px; text-align: justify; font-size: 11pt;">Peserta didik pada kelas ${d.kelas} diharapkan mampu mengonstruksi pemahaman mendalam terkait materi ${d.bab} melalui praktik pedagogis ${d.pedagogis}.</p>
+                    
+                    <p style="margin-top: 15px; margin-bottom: 8px;"><strong>2. Tujuan Pembelajaran (TP)</strong></p>
+                    <ul style="margin-left: 45px; list-style-type: disc; font-size: 11pt;">
+                        <li>Menelaah konsep fundamental dari ${d.bab} secara sistematis.</li>
+                        <li>Mengintegrasikan nilai-nilai profil lulusan dalam aktivitas ${d.bab}.</li>
+                        <li>Memecahkan masalah nyata yang berkaitan dengan ${d.bab}.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 15px;">III. PRAKTIK PEDAGOGIS</h4>
+                    <p style="margin-left: 20px; font-size: 11pt;">Strategi utama yang digunakan dalam modul ini adalah <strong>${d.pedagogis}</strong>, yang menitikberatkan pada keaktifan siswa (student-centered learning).</p>
+                </div>
+            `;
+
+            // PAGE 2: SKENARIO & TANDA TANGAN
+            document.getElementById('p2').innerHTML = `
+                <div style="margin-bottom: 35px;">
+                    <h4 style="font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 15px;">IV. KEGIATAN PEMBELAJARAN</h4>
+                    <p style="margin-bottom: 10px;"><strong>A. Langkah-Langkah Strategis:</strong></p>
+                    <ul style="margin-left: 45px; list-style-type: lower-alpha; font-size: 11pt; line-height: 1.8;">
+                        <li><strong>Tahap Pendahuluan:</strong> Guru memberikan apersepsi, motivasi, dan menyampaikan tujuan materi ${d.bab}.</li>
+                        <li><strong>Tahap Inti:</strong> Siswa melakukan eksplorasi kelompok, riset mandiri, dan diskusi terbimbing sesuai metode ${d.pedagogis}.</li>
+                        <li><strong>Tahap Penutup:</strong> Refleksi bersama, evaluasi proses, dan pemberian umpan balik konstruktif.</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 35px;">
+                    <h4 style="font-weight: bold; text-decoration: underline; font-size: 12pt; margin-bottom: 15px;">V. ASESMEN DAN EVALUASI</h4>
+                    <p style="margin-left: 20px; font-size: 11pt; margin-bottom: 5px;">• <strong>Asesmen Formatif:</strong> Observasi partisipasi dan keaktifan selama proses ${d.pedagogis}.</p>
+                    <p style="margin-left: 20px; font-size: 11pt;">• <strong>Asesmen Sumatif:</strong> Uji kompetensi akhir terkait penguasaan materi ${d.bab}.</p>
+                </div>
+
+                <div style="margin-top: 120px; display: flex; justify-content: space-between; text-align: center; font-size: 11pt;">
+                    <div style="width: 200px;">
+                        <p>Mengetahui,</p>
+                        <p style="margin-bottom: 80px;">Kepala Sekolah</p>
+                        <p style="font-weight: bold; text-decoration: underline;">${d.kepsek}</p>
+                    </div>
+                    <div style="width: 250px;">
+                        <p>${d.kab.toUpperCase()}, ${new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</p>
+                        <p style="margin-bottom: 80px;">Guru Mata Pelajaran</p>
+                        <p style="font-weight: bold; text-decoration: underline;">${d.guru}</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 50px; text-align: center; font-size: 8pt; color: #777; font-style: italic; border-top: 1px solid #eee; padding-top: 10px;">
+                    Dokumen ini disusun menggunakan AI Perangkat Ajar - Muzanni Edition
+                </div>
+            `;
+            window.print();
+        }
+    </script>
+</body>
+</html>
